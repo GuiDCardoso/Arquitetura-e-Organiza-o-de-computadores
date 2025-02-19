@@ -2,7 +2,7 @@
 #include <math.h>
 #include <string.h>
 
-int binario_para_decimal(char binario[]) {
+int binarioParaDecimal(char binario[]) {
     int decimal = 0;
     int tamanho = strlen(binario);
 
@@ -14,14 +14,13 @@ int binario_para_decimal(char binario[]) {
     return decimal;
 }
 
-void decimal_para_binario(int decimal, char binario[]) {
+void decimalParaBinario(int decimal, char binario[]) {
     if (decimal == 0) {
         strcpy(binario, "0");
         return;
     }
 
-    int negativo = (decimal < 0);
-    if (negativo) decimal = -decimal;
+    if (decimal < 0) decimal = -decimal;
 
     int i = 0;
     while (decimal > 0) {
@@ -31,7 +30,6 @@ void decimal_para_binario(int decimal, char binario[]) {
     }
     binario[i] = '\0';
 
-    // Inverter o resultado
     int n = strlen(binario);
     for (int j = 0; j < n / 2; j++) {
         char temp = binario[j];
@@ -39,20 +37,23 @@ void decimal_para_binario(int decimal, char binario[]) {
         binario[n - 1 - j] = temp;
     }
 
-    if (negativo) {
-        // Aplicar complemento de dois para números negativos
+    if (decimal < 0) {
+        
         char complemento[65];
-        int len = strlen(binario);
+        int tamanho = strlen(binario);
 
-        // Inverter os bits (complemento de 1)
-        for (int k = 0; k < len; k++) {
-            complemento[k] = (binario[k] == '0') ? '1' : '0';
-        }
-        complemento[len] = '\0';
-
-        // Adicionar 1
+  
+        for (int k = 0; k < tamanho; k++) {
+    if (binario[k] == '0') {
+        complemento[k] = '1';
+    } else {
+        complemento[k] = '0';
+    }
+}
+    complemento[tamanho] = '\0';
+      
         int carry = 1;
-        for (int k = len - 1; k >= 0; k--) {
+        for (int k = tamanho - 1; k >= 0; k--) {
             if (complemento[k] == '0' && carry == 1) {
                 complemento[k] = '1';
                 carry = 0;
@@ -63,50 +64,50 @@ void decimal_para_binario(int decimal, char binario[]) {
         }
 
         if (carry == 1) {
-            // Adicionar bit extra
-            for (int j = len; j > 0; j--) {
+           
+            for (int j = tamanho; j > 0; j--) {
                 complemento[j] = complemento[j - 1];
             }
             complemento[0] = '1';
-            complemento[len + 1] = '\0';
+            complemento[tamanho + 1] = '\0';
         }
 
         strcpy(binario, complemento);
     }
 }
 
-int somar_binarios(char bin1[], char bin2[]) {
-    int decimal1 = binario_para_decimal(bin1);
-    int decimal2 = binario_para_decimal(bin2);
+int somarBinarios(char bin1[], char bin2[]) {
+    int decimal1 = binarioParaDecimal(bin1);
+    int decimal2 = binarioParaDecimal(bin2);
     return decimal1 + decimal2;
 }
 
-void subtrair_binarios(char bin1[], char bin2[], char resultado[]) {
-    int decimal1 = binario_para_decimal(bin1);
-    int decimal2 = binario_para_decimal(bin2);
+void subtrairBinarios(char bin1[], char bin2[], char resultado[]) {
+    int decimal1 = binarioParaDecimal(bin1);
+    int decimal2 = binarioParaDecimal(bin2);
 
     int aux = decimal1 - decimal2;
 
-    decimal_para_binario(aux, resultado);
+    decimalParaBinario(aux, resultado);
 }
 
-int multiplicar_binarios(char bin1[], char bin2[]) {
-    int decimal1 = binario_para_decimal(bin1);
-    int decimal2 = binario_para_decimal(bin2);
+int multiplicarBinarios(char bin1[], char bin2[]) {
+    int decimal1 = binarioParaDecimal(bin1);
+    int decimal2 = binarioParaDecimal(bin2);
     return decimal1 * decimal2;
 }
 
-int dividir_binarios(char bin1[], char bin2[]) {
-    int decimal1 = binario_para_decimal(bin1);
-    int decimal2 = binario_para_decimal(bin2);
+int dividirBinarios(char bin1[], char bin2[]) {
+    int decimal1 = binarioParaDecimal(bin1);
+    int decimal2 = binarioParaDecimal(bin2);
     if (decimal2 == 0) {
-        printf("Erro: Divisão por zero!\n");
+        printf("Erro: Não dividirás por zero!\n");
         return 0;
     }
     return decimal1 / decimal2;
 }
 
-void exibir_menu() {
+void exibirMenu() {
     printf("\nCalculadora Binária\n");
     printf("1. Somar\n");
     printf("2. Subtrair\n");
@@ -116,12 +117,12 @@ void exibir_menu() {
 }
 
 int main() {
-    char bin1[65], bin2[65], bin_resultado[65];
+    char bin1[65], bin2[65], binResultado[65];
     int escolha;
     char continuar;
 
     do {
-        exibir_menu();
+        exibirMenu();
         printf("Escolha uma operação: ");
         scanf("%d", &escolha);
 
@@ -134,27 +135,27 @@ int main() {
 
         switch (escolha) {
             case 1:
-                decimal_para_binario(somar_binarios(bin1, bin2), bin_resultado);
+                decimalParaBinario(somarBinarios(bin1, bin2), binResultado);
                 break;
             case 2:
-                subtrair_binarios(bin1, bin2, bin_resultado);
+                subtrairBinarios(bin1, bin2, binResultado);
                 break;
             case 3:
-                decimal_para_binario(multiplicar_binarios(bin1, bin2), bin_resultado);
+                decimalParaBinario(multiplicarBinarios(bin1, bin2), binResultado);
                 break;
             case 4:
-                decimal_para_binario(dividir_binarios(bin1, bin2), bin_resultado);
+                decimalParaBinario(dividirBinarios(bin1, bin2), binResultado);
                 break;
             default:
                 printf("Escolha apenas opções válidas.\n");
                 continue;
         }
 
-        printf("Resultado: %s\n", bin_resultado);
+        printf("Resultado: %s\n", binResultado);
         printf("Deseja realizar outra operação? (s/n): ");
         scanf(" %c", &continuar);
     } while (continuar == 's');
 
-    printf("Fim da calculadora.\n");
+    printf("Obrigado por utilizar minha calculadora!! S2\n");
     return 0;
 }
